@@ -22,6 +22,7 @@ namespace MyShop.DataAccess.InMemory
             }
         }
 
+        //save product list to cache memory 
         public void Commit()
         {
             cache["products"] = productsList;

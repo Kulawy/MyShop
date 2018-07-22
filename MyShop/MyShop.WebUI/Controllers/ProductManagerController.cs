@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MyShop.Core.Models;
+using MyShop.Core.ViewModels;
 using MyShop.DataAccess.InMemory;
 
 namespace MyShop.WebUI.Controllers
@@ -12,23 +13,29 @@ namespace MyShop.WebUI.Controllers
     {
         //declate context as ProductRepository whitch is the list and a service for that list for Products
         private ProductRepository context;
+        private ProductCategoryRepository productCategoriesContext;
+
         
         public ProductManagerController()
         {
             context = new ProductRepository();
+            productCategoriesContext = new ProductCategoryRepository();
 
         }
         // GET: ProductManager
         public ActionResult Index()
         {
+
             List<Product> productsList = context.ProductCollection().ToList();
             return View(productsList);
         }
 
         public ActionResult Create()
         {
-            Product product = new Product();
-            return View(product);
+            ProductManagerViewModel productViewModel = new ProductManagerViewModel(); 
+            productViewModel.Product = new Product();
+            productViewModel.ProductCategoriesEnumerable = productCategoriesContext.ProductCategoryCollection();
+            return View(productViewModel);
         }
 
         [HttpPost]
@@ -57,7 +64,10 @@ namespace MyShop.WebUI.Controllers
             }
             else
             {
-                return View(prod);
+                ProductManagerViewModel productViewModel = new ProductManagerViewModel();
+                productViewModel.Product = prod;
+                productViewModel.ProductCategoriesEnumerable = productCategoriesContext.ProductCategoryCollection();
+                return View(productViewModel);
             }
         }
 

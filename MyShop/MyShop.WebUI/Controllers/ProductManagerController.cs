@@ -12,21 +12,21 @@ namespace MyShop.WebUI.Controllers
     public class ProductManagerController : Controller
     {
         //declate context as ProductRepository whitch is the list and a service for that list for Products
-        private ProductRepository context;
-        private ProductCategoryRepository productCategoriesContext;
+        private InMemoryRepository<Product> context;
+        private InMemoryRepository<ProductCategory> productCategoriesContext;
 
         
         public ProductManagerController()
         {
-            context = new ProductRepository();
-            productCategoriesContext = new ProductCategoryRepository();
+            context = new InMemoryRepository<Product>();
+            productCategoriesContext = new InMemoryRepository<ProductCategory>();
 
         }
         // GET: ProductManager
         public ActionResult Index()
         {
 
-            List<Product> productsList = context.ProductCollection().ToList();
+            List<Product> productsList = context.ItemsColletion().ToList();
             return View(productsList);
         }
 
@@ -34,7 +34,7 @@ namespace MyShop.WebUI.Controllers
         {
             ProductManagerViewModel productViewModel = new ProductManagerViewModel(); 
             productViewModel.Product = new Product();
-            productViewModel.ProductCategoriesEnumerable = productCategoriesContext.ProductCategoryCollection();
+            productViewModel.ProductCategoriesEnumerable = productCategoriesContext.ItemsColletion();
             return View(productViewModel);
         }
 
@@ -66,7 +66,7 @@ namespace MyShop.WebUI.Controllers
             {
                 ProductManagerViewModel productViewModel = new ProductManagerViewModel();
                 productViewModel.Product = prod;
-                productViewModel.ProductCategoriesEnumerable = productCategoriesContext.ProductCategoryCollection();
+                productViewModel.ProductCategoriesEnumerable = productCategoriesContext.ItemsColletion();
                 return View(productViewModel);
             }
         }

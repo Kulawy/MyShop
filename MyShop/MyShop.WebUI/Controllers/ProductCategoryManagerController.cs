@@ -11,17 +11,17 @@ namespace MyShop.WebUI.Controllers
     public class ProductCategoryManagerController : Controller
     {
         //declate context as ProductRepository whitch is the list and a service for that list for Products
-        private ProductCategoryRepository context;
+        private InMemoryRepository<ProductCategory> context;
 
         public ProductCategoryManagerController()
         {
-            context = new ProductCategoryRepository();
+            context = new InMemoryRepository<ProductCategory>();
 
         }
         // GET: ProductManager
         public ActionResult Index()
         {
-            List<ProductCategory> productCategoryList = context.ProductCategoryCollection().ToList();
+            List<ProductCategory> productCategoryList = context.ItemsColletion().ToList();
             return View(productCategoryList);
         }
 

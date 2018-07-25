@@ -1,5 +1,6 @@
 ﻿using MyShop.Core.Contracts;
 using MyShop.Core.Models;
+using MyShop.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Web;
 
 namespace MyShop.Services
 {
-    public class BasketService
+    public class BasketService : IBasketService
     {
         IRepository<Product> productContext;
         IRepository<Basket> basketContext;
@@ -96,7 +97,57 @@ namespace MyShop.Services
         }
 
 
+        public List<BasketItemViewModel> GetBasketItems( HttpContextBase httpContextInput)
+        {
+            Basket basket = GetBasket(httpContextInput, false);
 
+            if (basket != null)
+            {
+                var result = (from b in basket.BasketItems
+                              join p in productContext.ItemsColletion() on b.ProductId equals p.Id
+                              select new BasketItemViewModel()
+                              {
+                                  Id = b.Id,
+                                  Quantity = b.Quantity,
+                                  ProductName = p.Name,
+                                  Image = p.Image,
+                                  Price = p.Price
+                              }
+                              ).ToList();
+                return result;
+            }
+            else
+                return new List<BasketItemViewModel>();
+
+        }
+
+
+        public BasketSummaryViewModel GetBasketSummary(HttpContextBase httpContextInput)
+        {
+            Basket basket = GetBasket(httpContextInput, false);
+            BasketSummaryViewModel basketSummaryModel = new BasketSummaryViewModel(0, 0);
+
+            if (basket != null)
+            {
+                int? basketCount = (from item in basket.BasketItems
+                                    select item.Quantity
+                                    ).Sum();
+                decimal? basketTotal = (from item in basket.BasketItems
+                                        join p in productContext.ItemsColletion() on item.ProductId equals p.Id
+                                        select item.Quantity * p.Price
+                                        ).Sum();
+
+                basketSummaryModel.BasketCount = basketCount ?? 0;
+                basketSummaryModel.BasketTotal = basketTotal ?? decimal.Zero;
+
+                return basketSummaryModel;
+
+            }
+            else
+                return basketSummaryModel;
+
+
+        }
 
 
     }

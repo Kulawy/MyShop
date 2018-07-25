@@ -17,6 +17,8 @@ namespace MyShop.DataAccess.SQL
 
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> PorductCategories { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
+        public DbSet<BasketItem> BasketsItems { get; set; }
 
         // now need to start to migration in View -> Other windows -> Package Manager Console:
             //Enable-Migrations
